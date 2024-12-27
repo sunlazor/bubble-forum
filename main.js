@@ -4,17 +4,16 @@ import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 const response = await fetch('./treedata.json');
 const data = await response.json();
 
-const width = 928;
+const width = 1000;
 
-// Compute the tree height; this approach will allow the height of the
-// SVG to scale according to the breadth (width) of the tree layout.
+// Form HierarhyNodes
 const root = d3.hierarchy(data);
+
 const dx = 10;
 const dy = width / (root.height + 1);
 
 // Create a tree layout.
 const tree = d3.tree().nodeSize([dx, dy]);
-
 // Sort the tree and apply the layout.
 root.sort((a, b) => d3.ascending(a.data.name, b.data.name));
 tree(root);
@@ -41,8 +40,7 @@ const svg = d3.create("svg")
     .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;")
 ;
 
-console.debug(root.links());
-
+// console.debug(root.links());
 
 const link = svg.append("g")
     .attr("fill", "none")
@@ -67,12 +65,12 @@ const node = svg.append("g")
     .data(root.descendants())
     .join("g")
     .attr("transform", d => `translate(${d.y},${d.x})`)
-
 ;
 
 node.append("circle")
     .attr("fill", d => d.children ? "#555" : "#999")
-    .attr("r", 2.5);
+    .attr("r", 2.5)
+;
 
 node.append("text")
     .attr("dy", "0.31em")
@@ -85,7 +83,8 @@ node.append("text")
 ;
 
 node.on("click", function () {
-    console.debug(this);
+    // console.debug(this);
+    console.debug(this.__data__.data.id);
 })
 ;
 
