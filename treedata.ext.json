@@ -1,0 +1,43 @@
+{
+ "name": "flare", "id": "FLgrZaRU1wUPD",
+ "children": [
+  {
+   "name": "analytics", "id": "bzC7qqnQsjSEpsh",
+   "children": [
+    {
+     "name": "cluster", "id": "8x4hzDLT9ag0zft",
+     "children": [
+      {"name": "AgglomerativeCluster", "id": "IzBtPoJDQpMclcQoF"},
+      {"name": "CommunityStructure", "id": "uMlf3"},
+      {
+       "name": "HierarchicalCluster",
+       "id": "uRvm",
+       "children": [
+        {
+         "name": "AgglomerativeCluster",
+         "id": "AgglomerativeCluster123",
+         "value": 3938
+        },
+        {
+         "name": "CommunityStructure",
+         "id": "CommunityStructure213",
+         "value": 3812
+        },
+        {
+         "name": "HierarchicalCluster",
+         "id": "HierarchicalCluster123",
+         "value": 6714
+        },
+        {
+         "name": "MergeEdge",
+         "id": "MergeEdge5345",
+         "value": 743
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

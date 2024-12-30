@@ -7,8 +7,17 @@ async function getData() {
 
     return data;
 }
+async function getDataExt() {
+    const response = await fetch('./treedata.ext.json');
+    const data = await response.json();
 
-async function mainDrawing(container, dataAsync) {
+    return data;
+}
+
+async function mainDrawing(dataAsync) {
+    // d3.select('#container').html(""); // for cleaning cases
+    // d3.selectAll('svg').remove(); // for cleaning cases
+
     const width = 1000;
 
 // Form HierarhyNodes
@@ -19,10 +28,10 @@ async function mainDrawing(container, dataAsync) {
     const dy = width / (root.height + 1);
 
 // Create a tree layout.
-    const tree = d3.tree().nodeSize([dx, dy]);
+    const treeLayout = d3.tree().nodeSize([dx, dy]);
 // Sort the tree and apply the layout.
     root.sort((a, b) => d3.ascending(a.data.name, b.data.name));
-    tree(root);
+    treeLayout(root);
 
 // Compute the extent of the tree. Note that x and y are swapped here
 // because in the tree layout, x is the breadth, but when displayed, the
@@ -39,7 +48,7 @@ async function mainDrawing(container, dataAsync) {
 // Compute the adjusted height of the tree.
     const height = x1 - x0 + dx * 2;
 
-    const svg = d3.create("svg")
+    const svg = d3.select("#container")
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", [-dy / 3, x0 - dx, width, height])
@@ -48,29 +57,39 @@ async function mainDrawing(container, dataAsync) {
 
 // console.debug(root.links());
 
-    const link = svg.append("g")
-        .attr("fill", "none")
-        .attr("stroke", "#555")
-        .attr("stroke-opacity", 0.4)
-        .attr("stroke-width", 1.5)
-        .selectAll()
-        .data(root.links())
+    const link = svg.select(".links")
+        .selectAll("path")
+        .data(root.links(), (d) => d)
         .join("path")
+        // .join(
+        //     function(enter) {
+        //         return enter
+        //             .append('path');
+        //     },
+        //     function(update) {
+        //         return update;
+        //     },
+        //     function(exit) {
+        //         return exit.remove();
+        //     }
+        // )
         .attr("d", d3.linkHorizontal()
             .x(d => d.y)
             .y(d => d.x)
         )
+        .attr("fill", "none")
+        .attr("stroke", "#555")
+        .attr("stroke-opacity", 0.4)
+        .attr("stroke-width", 1.5)
     ;
 
-// console.debug(root.links());
-
-    const node = svg.append("g")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-width", 3)
-        .selectAll()
-        .data(root.descendants())
+    const node = svg.select(".nodes")
+        .selectAll("g")
+        .data(root.descendants(), (d) => d)
         .join("g")
         .attr("transform", d => `translate(${d.y},${d.x})`)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-width", 3)
     ;
 
     node.append("circle")
@@ -87,6 +106,7 @@ async function mainDrawing(container, dataAsync) {
         .attr("paint-order", "stroke")
         .attr("id", d => d.data.id)
     ;
+
     node.on("click",
         (event) => {
             console.debug(event.currentTarget.__data__.data.id);
@@ -117,7 +137,26 @@ async function mainDrawing(container, dataAsync) {
 
 // Append the SVG element.
 // console.debug(svg.node());
-    container.append(svg.node());
+//     container.append(svg.node());
 }
 
-await mainDrawing(container, getData());
+// await mainDrawing(getData());
+// await mainDrawing(getData());
+// await mainDrawing(getData());
+// await mainDrawing(getData());
+await mainDrawing(getData());
+// await mainDrawing(getDataExt());
+
+async function randomDrawing() {
+    let res;
+    if(Math.random() > 0.5) {
+        res = getData();
+    } else {
+        res = getDataExt();
+    }
+
+    await mainDrawing(res);
+}
+
+d3.select("button")
+    .on("click", randomDrawing);
