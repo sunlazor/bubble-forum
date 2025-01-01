@@ -108,19 +108,32 @@ async function mainDrawing(dataAsync) {
     ;
 
     node.on("click",
-        (event) => {
-            console.debug(event.currentTarget.__data__.data.id);
-            console.debug(root);
+        async (event) => {
+            // console.debug(event.currentTarget.__data__.data.id);
+            // console.debug(root);
 
             const filter = node => node.data.id === event.currentTarget.__data__.data.id;
             let findings = root.find(filter);
             console.debug(findings);
+            console.debug(findings.data.id);
             findings.data.name = "I WAS CHANGED";
             // кажется что подход должен быть другим
             // нужно вносить изменения в данные
             // и уже перерисовывать на их основе
-            findings.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212})
-            console.debug(data);
+            // const newChildRaw = {"name": "New child", "id": "ADDSLFJ", "value": 1212};
+            // let newChild = d3.hierarchy(newChildRaw);
+            // console.debug(newChild);
+            // if (findings.children !== undefined) {
+            //     findings.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
+            // } else {
+            //     findings.children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
+            // }
+            //
+            // data
+
+            // console.debug(data);
+            await mainDrawing(data);
+            // data.
         })
     ;
 
