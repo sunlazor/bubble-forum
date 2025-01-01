@@ -21,14 +21,14 @@ async function mainDrawing(dataAsync) {
     const width = 1000;
 
 // Form HierarhyNodes
-    const data = await dataAsync;
-    const root = d3.hierarchy(data);
+    let data = dataAsync instanceof Promise ? await dataAsync : dataAsync;
+    let root = d3.hierarchy(data);
 
-    const dx = 10;
-    const dy = width / (root.height + 1);
+    let dx = 10;
+    let dy = width / (root.height + 1);
 
 // Create a tree layout.
-    const treeLayout = d3.tree().nodeSize([dx, dy]);
+    let treeLayout = d3.tree().nodeSize([dx, dy]);
 // Sort the tree and apply the layout.
     root.sort((a, b) => d3.ascending(a.data.name, b.data.name));
     treeLayout(root);
@@ -57,7 +57,7 @@ async function mainDrawing(dataAsync) {
 
 // console.debug(root.links());
 
-    const link = svg.select(".links")
+    let link = svg.select(".links")
         .selectAll("path")
         .data(root.links(), (d) => d)
         .join("path")
@@ -83,7 +83,7 @@ async function mainDrawing(dataAsync) {
         .attr("stroke-width", 1.5)
     ;
 
-    const node = svg.select(".nodes")
+    let node = svg.select(".nodes")
         .selectAll("g")
         .data(root.descendants(), (d) => d)
         .join("g")
@@ -114,20 +114,61 @@ async function mainDrawing(dataAsync) {
 
             const filter = node => node.data.id === event.currentTarget.__data__.data.id;
             let findings = root.find(filter);
-            console.debug(findings);
-            console.debug(findings.data.id);
-            findings.data.name = "I WAS CHANGED";
+
+            const path = root.path(findings);
+            // path.forEach((elem) => {})
+            let cursor = data;
+            for (let i = 0; i < path.length; i++) {
+                console.debug(cursor);
+                // console.debug(path[i]);
+                if (i === path.length - 1) {
+                    if (cursor.children === undefined) {
+                        cursor.children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
+                    } else {
+                        cursor.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
+                    }
+                } else {
+                    if (cursor.id === path[i].data.id) { continue; }
+                    cursor = cursor.children.filter(item => item.id === path[i].data.id)[0];
+                }
+                // cursor = cursor.filter(item => item.data.id === path[i].data.id);
+                // if (i === path.length - 1) {
+                //     if (cursor.children !== undefined) {
+                //         cursor.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
+                //     } else {
+                //         cursor.children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
+                //     }
+                // }
+                // if (i === path.length - 1) {
+                //     if (path[i].children !== undefined) {
+                //         path[i].children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
+                //     } else {
+                //         path[i].children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
+                //     }
+                // }
+            }
+
+            // console.debug(findings);
+            // console.debug(findings.data.id);
+            // findings.data.name = "I WAS CHANGED";
             // кажется что подход должен быть другим
             // нужно вносить изменения в данные
             // и уже перерисовывать на их основе
             // const newChildRaw = {"name": "New child", "id": "ADDSLFJ", "value": 1212};
             // let newChild = d3.hierarchy(newChildRaw);
             // console.debug(newChild);
+
+            // console.debug(findings);
+            // findings - отдельный объект, который имеет ссылки на другие объекты,
+            // но на него никто не ссылается
             // if (findings.children !== undefined) {
             //     findings.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
             // } else {
             //     findings.children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
             // }
+
+            // console.debug(findings);
+            // console.debug(root.path(findings));
             //
             // data
 
