@@ -119,17 +119,46 @@ async function mainDrawing(dataAsync) {
             // path.forEach((elem) => {})
             let cursor = data;
             for (let i = 0; i < path.length; i++) {
-                console.debug(cursor);
+                // console.debug(cursor);
                 // console.debug(path[i]);
-                if (i === path.length - 1) {
+                // if (cursor.id === path[i].data.id) {
+                //     continue;
+                // }
+                if (findings.data.id === path[i].data.id) {
+                    cursor = cursor.children.filter(function(item) {
+                        console.debug("item " + item.id);
+                        console.debug("pathid " + path[i].data.id);
+                        return item.id === path[i].data.id;
+                    })[0];
+                    const name = "New child" + Math.random();
                     if (cursor.children === undefined) {
-                        cursor.children = [{"name": "New child", "id": "ADDSLFJ", "value": 1212}];
+                        console.debug("cursor children undefinde");
+                        console.debug(cursor);
+                        cursor.children = [{"name": name, "id": name, "value": 1212}];
                     } else {
-                        cursor.children.push({"name": "New child", "id": "ADDSLFJ", "value": 1212});
+                        console.debug("cursor children exists");
+                        console.debug(cursor);
+                        cursor.children.push({"name": name, "id": name, "value": 1212});
                     }
                 } else {
-                    if (cursor.id === path[i].data.id) { continue; }
-                    cursor = cursor.children.filter(item => item.id === path[i].data.id)[0];
+                    // cursor = cursor.children.filter(item => item.id === path[i].data.id)[0];
+                    console.debug("path is");
+                    console.debug(path[i]);
+                    if (cursor.id === path[i].data.id) {
+                        console.debug("cursor equal path");
+                    } else {
+                        console.debug("cursor pre filtered");
+                        console.debug(cursor);
+                        cursor = cursor.children.filter(function(item) {
+                            console.debug("item " + item.id);
+                            console.debug("pathid " + path[i].data.id);
+                            return item.id === path[i].data.id;
+                        })[0];
+                        console.debug("cursor post filtered");
+                        console.debug(cursor);
+
+                    }
+
                 }
                 // cursor = cursor.filter(item => item.data.id === path[i].data.id);
                 // if (i === path.length - 1) {
